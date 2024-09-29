@@ -6,7 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 
 class Solution {
-    boolean[]visited;
+    boolean[]visited; 
     public boolean backTracking(int[]nums, int target, int k, int startIndex, int curSum) {
 
         if (k == 0) {
