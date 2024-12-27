@@ -1,48 +1,46 @@
-package 寻找峰值;
+package 统计全为1的正方形子矩阵;
 
 class Solution {
-    public int findPeakElement(int[] nums) {
+    public int countSquares(int[][] matrix) {
 
-        if (nums.length == 1) {
-            return 0;
-        }
-        for (int i = 0; i < nums.length; i++) {
+        int res = 0;
 
-            if (i == 0 && nums[i] > nums[i + 1]) {
-                return i;
-            }
-            if (i == nums.length - 1 && nums[i] > nums[i - 1]) {
-                return i;
-            }
-            if (i != 0 && i != nums.length - 1 && nums[i] > nums[i - 1] && nums[i] > nums[i + 1]) {
-                return i;
+        int m = matrix.length, n = matrix[0].length;
+        int maxLen = Math.max(m, n);
+
+        int[][]preSum = new int[m + 1][n + 1];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == 1) {
+                    res++;
+                }
+                preSum[i + 1][j + 1] = preSum[i + 1][j] + preSum[i][j + 1] - preSum[i][j] + matrix[i][j];
             }
         }
-        return 0;
+
+        for (int len = 2; len <= maxLen; len++) {
+            for (int i = 0; i <= m - len; i++) {
+                for (int j = 0; j <= n - len; j++) {
+                    int sum = preSum[i + len][j + len] + preSum[i][j] - preSum[i + len][j] - preSum[i][j + len];
+                    if (sum == len * len) {
+                        res++;
+                    }
+                }
+            }
+        }
+
+        return res;
     }
-
-    // Binary Search
-    public int findPeakElement2(int[] nums) {
-
-        int left = 0, right = nums.length - 1;
-
-        while (left < right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] > nums[mid + 1]) {
-                right = mid;
-            } else {
-                left = mid + 1;
-            }
-        }
-        return left;
-    }
-
     public static void main(String[] args) {
 
-        int[] nums = {1,2,1,3,5,6,4};
+        int[][] matrix = {
+                {0, 1, 1, 1},
+                {1, 1, 1, 1},
+                {0, 1, 1, 1}
+        };
 
         Solution sol = new Solution();
-        int ret = sol.findPeakElement2(nums);
+        int ret = sol.countSquares(matrix);
 
         System.out.println(ret);
     }

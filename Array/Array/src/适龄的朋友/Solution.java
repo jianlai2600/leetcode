@@ -1,56 +1,38 @@
-package 二分查找;
+package 适龄的朋友;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int numFriendRequests(int[] ages) {
 
-        List<Integer>ret = new ArrayList<>();
+        int res = 0;
+        Arrays.sort(ages);
 
-        Arrays.sort(nums);
+        int left = 0, right = 0;
+        for (int age : ages) {
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+            if (age < 15) {
+                continue;
             }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
+            while (ages[left] <= 0.5 * age + 7) {
+                left++;
             }
+            while (right + 1 < ages.length && ages[right + 1] <= age) {
+                right++;
+            }
+            res += right - left;
         }
-        return -1;
+
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] ages = {20,30,100,110,120};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.numFriendRequests(ages);
 
         System.out.println(ret);
     }

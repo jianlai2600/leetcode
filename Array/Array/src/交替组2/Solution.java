@@ -1,34 +1,42 @@
-package 交替组1;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package 交替组2;
 
 class Solution {
-    public int numberOfAlternatingGroups(int[] colors) {
+    public int numberOfAlternatingGroups(int[] colors, int k) {
 
         int res = 0;
         int n = colors.length;
 
-        for (int i = 1; i < n - 1; i++) {
-            if (colors[i - 1] != colors[i] && colors[i] != colors[i + 1]) {
+        int[]arr = new int[n * 2];
+
+        System.arraycopy(colors, 0, arr, 0, colors.length); // 拷贝第一个数组
+        System.arraycopy(colors, 0, arr, colors.length, colors.length); // 拷贝第二个数组
+
+        int left = 0;
+        int cnt = 1;
+        for (int right = 1; left < n && right < n * 2;) {
+            while (arr[right] != arr[right - 1] && cnt < k) {
+                right++;
+                cnt++;
+            }
+            if (cnt == k) {
                 res++;
+                left++;
+                cnt--;
+            } else {
+                left = right;
+                right = left + 1;
+                cnt = 1;
             }
         }
-        if (colors[n - 1] != colors[0] && colors[0] != colors[1]) {
-            res++;
-        }
-        if (colors[n - 1] != colors[n - 2] && colors[n - 1] != colors[0]) {
-            res++;
-        }
+
         return res;
     }
     public static void main(String[] args) {
 
-        int[] colors = {0,1,0,0,1};
+        int[] colors = {0,1,0,1,0};
 
         Solution sol = new Solution();
-        int ret = sol.numberOfAlternatingGroups(colors);
+        int ret = sol.numberOfAlternatingGroups(colors, 3);
 
         System.out.println(ret);
     }

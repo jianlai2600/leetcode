@@ -1,65 +1,52 @@
-package 新增道路查询后的最短距离1;
+package 新增道路查询后的最短距离2;
 
 import java.util.*;
 
 class Solution {
-    public int bfs(Map<Integer, List<Integer>> graph) {
-
-        Queue<Integer>queue = new LinkedList<>();
-        queue.add(0);
-        int n = graph.size();
-        int[]dist = new int[n];
-
-        for (int i = 1; i < n; i++) {
-            dist[i] = -1;
-        }
-
-        while (!queue.isEmpty()) {
-
-            int curNode = queue.poll();
-
-            for (Integer neighbor : graph.get(curNode)) {
-
-                if (dist[neighbor] != -1) {
-                    continue;
-                }
-                queue.add(neighbor);
-                dist[neighbor] = dist[curNode] + 1;
-            }
-        }
-        return dist[n - 1];
-    }
     public int[] shortestDistanceAfterQueries(int n, int[][] queries) {
 
-        Map<Integer, List<Integer>> graph = new HashMap<>();
-        for (int i = 0; i < n - 1; i++) {
-            graph.put(i, new ArrayList<>());
-            graph.get(i).add(i + 1);
+        int[]roads = new int[n];
+        for (int i = 0; i < n; i++) {
+            roads[i] = i + 1;
         }
-        graph.put(n - 1, new ArrayList<>());
+        roads[n - 1] = -1;
 
         int len = queries.length;
         int[]res = new int[len];
 
         int index = 0;
-        for (int[]query : queries) {
+        int dis = n - 1;
+        for (int i = 0; i < queries.length; i++) {
+
+            int[]query = queries[i];
             int from = query[0];
             int to = query[1];
 
-            graph.get(from).add(to);
+            int nextStation = roads[from];
 
-            res[index++] = bfs(graph);
+            if (to > roads[from]) {
+                roads[from] = to;
+            }
+//            nextStation = roads[from];
+
+            while (nextStation != -1 && nextStation < to) {
+                int tmp = roads[nextStation];
+                roads[nextStation] = -1;
+                nextStation = tmp;
+                dis--;
+            }
+
+            res[index++] = dis;
         }
 
         return res;
     }
     public static void main(String[] args) {
 
-        int n = 5;
+        int n = 4;
         int[][] queries = {
-                {2, 4},
-                {0, 2},
-                {0, 4}
+                {0, 3},
+                {0, 2}
         };
 
         Solution sol = new Solution();

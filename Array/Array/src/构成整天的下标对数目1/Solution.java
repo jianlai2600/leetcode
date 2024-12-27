@@ -1,56 +1,37 @@
-package 构成整天的下标对数目1.二分查找;
+package 构成整天的下标对数目1;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int countCompleteDayPairs(int[] hours) {
 
-        List<Integer>ret = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        int res = 0;
 
-        Arrays.sort(nums);
+        for (Integer hour : hours) {
+            int tmp = hour % 24;
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+            int need = (24 - tmp) % 24;
+            if (map.containsKey(need)) {
+                res += map.get(need);
             }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
+            if (!map.containsKey(tmp)) {
+                map.put(tmp, 1);
             } else {
-                return mid;
+                map.put(tmp, map.get(tmp) + 1);
             }
+
         }
-        return -1;
+
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] hours = {12,12,30,24,24};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.countCompleteDayPairs(hours);
 
         System.out.println(ret);
     }

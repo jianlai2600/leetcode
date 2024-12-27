@@ -1,56 +1,34 @@
-package 二分查找;
+package 交替组1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int numberOfAlternatingGroups(int[] colors) {
 
-        List<Integer>ret = new ArrayList<>();
+        int res = 0;
+        int n = colors.length;
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+        for (int i = 1; i < n - 1; i++) {
+            if (colors[i - 1] != colors[i] && colors[i] != colors[i + 1]) {
+                res++;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
+        if (colors[n - 1] != colors[0] && colors[0] != colors[1]) {
+            res++;
         }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
+        if (colors[n - 1] != colors[n - 2] && colors[n - 1] != colors[0]) {
+            res++;
         }
-        return -1;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] colors = {0,1,0,0,1};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.numberOfAlternatingGroups(colors);
 
         System.out.println(ret);
     }

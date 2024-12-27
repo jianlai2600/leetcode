@@ -1,8 +1,4 @@
-package 长度为K的子数组的能量值1;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+package 长度为K的子数组的能量值2;
 
 class Solution {
     public int[] resultsArray(int[] nums, int k) {

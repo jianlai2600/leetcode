@@ -1,34 +1,23 @@
-package H指数;
+package 有序数组中的单一元素;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 class Solution {
-    public int hIndex(int[] citations) {
+    public int singleNonDuplicate(int[] nums) {
 
-        Arrays.sort(citations);
-        int res = 0;
-        int n = citations.length;
+        int res = nums[0];
 
-        int ans = 0;
-
-        for (int i = 1; n - i >= 0 ; i++) {
-            int index = n - i;
-            if (citations[index] >= i) {
-                if (i >= ans) {
-                    ans = i;
-                }
-            }
+        for (int i = 1; i < nums.length; i++) {
+            res ^= nums[i];
         }
-        return ans;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {1, 1, 3};
+        int[] nums = {1,1,2,3,3,4,4,8,8};
 
         Solution sol = new Solution();
-        int ret = sol.hIndex(nums);
+        int ret = sol.singleNonDuplicate(nums);
 
         System.out.println(ret);
     }

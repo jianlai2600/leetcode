@@ -1,57 +1,44 @@
-package 二分查找;
+package 三角形的最大高度;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int helper(int num1, int num2) {
 
-        List<Integer>ret = new ArrayList<>();
+        int cnt = 0;
+        int curNum = 1;
 
-        Arrays.sort(nums);
+        while (num1 > 0 || num2 > 0) {
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+            if (num1 >= curNum) {
+                cnt++;
+                num1 -= curNum++;
             } else {
-                right = mid - 1;
+                break;
+            }
+
+            if (num2 >= curNum) {
+                cnt++;
+                num2 -= curNum++;
+            } else {
+                break;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
+        return cnt;
     }
-    //
-    public int search(int[] nums, int target) {
+    public int maxHeightOfTriangle(int red, int blue) {
 
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return Math.max(helper(red, blue), helper(blue, red));
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int red = 2, blue = 4;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int res = sol.maxHeightOfTriangle(red, blue);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

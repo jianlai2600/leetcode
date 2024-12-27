@@ -1,4 +1,4 @@
-package 数组元素和与数字和的绝对差.二分查找;
+package 数组元素和与数字和的绝对差;
 
 class Solution {
     public int getDigitNum(int num) {

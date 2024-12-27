@@ -1,57 +1,50 @@
-package 二分查找;
+package 寻找右区间;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int[] findRightInterval(int[][] intervals) {
 
-        List<Integer>ret = new ArrayList<>();
+        Map<int[], Integer> map = new HashMap<>();
 
-        Arrays.sort(nums);
+        for (int i = 0; i < intervals.length; i++) {
+            map.put(intervals[i], i);
+        }
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+        Arrays.sort(intervals, (a, b)->a[0] - b[0]);
+
+        int n = intervals.length;
+
+        int[]res = new int[n];
+        Arrays.fill(res, -1);
+
+        for (int i = 0; i < intervals.length; i++) {
+            int curIndex = map.get(intervals[i]);
+            int nextIndex = i;
+
+            int curRight = intervals[i][1];
+
+            while (nextIndex < intervals.length && intervals[nextIndex][0] < curRight) {
+                nextIndex++;
+            }
+            if (nextIndex != intervals.length) {
+                res[curIndex] = map.get(intervals[nextIndex]);
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[][] intervals = new int[2][2]; // 初始化一个 3 行 2 列的二维数组
+        intervals[0] = new int[]{1, 1};
+        intervals[1] = new int[]{3, 4};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int res[] = sol.findRightInterval(intervals);
 
-        System.out.println(ret);
+        for (Integer num : res) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
     }
 }

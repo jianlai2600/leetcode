@@ -1,57 +1,51 @@
-package 二分查找;
+package 平方数之和;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public boolean judgeSquareSum(int c) {
 
-        List<Integer>ret = new ArrayList<>();
+        if (c == 0) {
+            return true;
+        }
+        for (int i = 1; i <= Math.sqrt(c); i++) {
+            int pow = i * i;
+            int remain = c - pow;
 
-        Arrays.sort(nums);
+            double sq = Math.sqrt(remain);
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+            if (sq ==(int)sq) {
+                return true;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
+        return false;
     }
-    //
-    public int search(int[] nums, int target) {
+    public boolean judgeSquareSum2(int c) {
 
-        int left = 0, right = nums.length - 1, mid;
+        long left = 0, right = (long)Math.sqrt(c);
+
         while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
+            long sum = left * left + right * right;
+
+            if (sum == c) {
+                return true;
+            } else if (sum > c) {
+                right--;
             } else {
-                return mid;
+                left++;
             }
         }
-        return -1;
+        return false;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int c = 5;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        boolean res = sol.judgeSquareSum(c);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

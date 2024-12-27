@@ -1,56 +1,23 @@
-package 二分查找;
+package 检查棋盘方格颜色是否相同;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public boolean checkTwoChessboards(String coordinate1, String coordinate2) {
 
-        List<Integer>ret = new ArrayList<>();
+        int c1 = coordinate1.charAt(0) - 'a' + 1 + coordinate1.charAt(1) - '1' + 1;
+        int c2 = coordinate2.charAt(0) - 'a' + 1 + coordinate2.charAt(1) - '1' + 1;
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return c1 % 2 == c2 % 2;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        String coordinate1 = "a1", coordinate2 = "c3";
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        boolean ret = sol.checkTwoChessboards(coordinate1, coordinate2);
 
         System.out.println(ret);
     }

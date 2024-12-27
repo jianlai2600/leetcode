@@ -1,30 +1,37 @@
-package 移动零;
+package 子数组范围和;
 
 class Solution {
-    public void moveZeroes(int[] nums) {
+    public long subArrayRanges(int[] nums) {
 
-        int slow = 0, fast = 0;
+        int n = nums.length;
+        long res = 0;
 
-        while (fast < nums.length) {
-            if (nums[fast] != 0) {
-                nums[slow++] = nums[fast];
+        for (int i = 0; i < n - 1; i++) {
+            int left = i, right = i;
+            int max = Integer.MIN_VALUE;
+            int min = Integer.MAX_VALUE;
+
+            while (right < n) {
+
+                if (nums[right] > max) {
+                    max = nums[right];
+                }
+                if (nums[right] < min) {
+                    min = nums[right];
+                }
+                res += max - min;
+                right++;
             }
-            fast++;
         }
-        while (slow < nums.length) {
-            nums[slow++] = 0;
-        }
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {0,1,0,3,12};
+        int[] nums = {4,-2,-3,4,1};
 
         Solution sol = new Solution();
-        sol.moveZeroes(nums);
+        long res = sol.subArrayRanges(nums);
 
-        for (Integer item : nums) {
-            System.out.print(item + " ");
-        }
-        System.out.println();
+        System.out.println(res);
     }
 }

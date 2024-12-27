@@ -1,56 +1,43 @@
-package 二分查找;
+package 统计满足K约束的子字符串数量1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int countKConstraintSubstrings(String s, int k) {
 
-        List<Integer>ret = new ArrayList<>();
+        int n = s.length();
+        int[]preSum = new int[n + 1];
 
-        Arrays.sort(nums);
+        for (int i = 0; i < n; i++) {
+            preSum[i + 1] = preSum[i] + s.charAt(i) - '0';
+        }
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+        int cnt = 0;
+
+        for (int i = 0; i < n; i++) {
+            for (int j = i; j < n; j++) {
+                int oneNum = preSum[j + 1] - preSum[i];
+                int zeroNum = j - i + 1 - oneNum;
+
+                if (oneNum <= k || zeroNum <= k) {
+                    cnt++;
+                } else {
+                    break;
+                }
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return cnt;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        String s = "10101";
+        int k = 1;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.countKConstraintSubstrings(s, k);
 
         System.out.println(ret);
     }

@@ -1,35 +1,48 @@
-package H指数;
+package 比较版本号;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 class Solution {
-    public int hIndex(int[] citations) {
+    public int compareVersion(String version1, String version2) {
 
-        Arrays.sort(citations);
-        int res = 0;
-        int n = citations.length;
+        String[]arr1 = version1.split("\\.");
+        String[]arr2 = version2.split("\\.");
 
-        int ans = 0;
+        int len1 = arr1.length;
+        int len2 = arr2.length;
+        int n = Math.max(len1, len2);
 
-        for (int i = 1; n - i >= 0 ; i++) {
-            int index = n - i;
-            if (citations[index] >= i) {
-                if (i >= ans) {
-                    ans = i;
-                }
+        int num1 = 0, num2 = 0;
+
+        for (int i = 0; i < n; i++) {
+            if (i >= len1) {
+                num1 = 0;
+            } else {
+                num1 = Integer.valueOf(arr1[i]);
+            }
+
+            if (i >= len2) {
+                num2 = 0;
+            } else {
+                num2 = Integer.valueOf(arr2[i]);
+            }
+
+            if (num1 < num2) {
+                return -1;
+            }
+            if (num1 > num2) {
+                return 1;
             }
         }
-        return ans;
+        return 0;
     }
     public static void main(String[] args) {
 
-        int[] nums = {1, 1, 3};
+        String version1 = "1.2", version2 = "1.10";
 
         Solution sol = new Solution();
-        int ret = sol.hIndex(nums);
+        int res = sol.compareVersion(version1, version2);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

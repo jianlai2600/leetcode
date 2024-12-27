@@ -1,57 +1,53 @@
-package 二分查找;
+package 图片平滑器;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    int[]directions = {-1, 0, 1};
+    int m, n;
+    public int calculate(int[][]img, int x, int y) {
 
-        List<Integer>ret = new ArrayList<>();
+        int cnt = 0;
+        int curSum = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int nx = x + directions[i];
+                int ny = y + directions[j];
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+                if (nx >= 0 && nx < m && ny >= 0 && ny < n) {
+                    cnt++;
+                    curSum += img[nx][ny];
+                }
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
+        return curSum / cnt;
     }
-    //
-    public int search(int[] nums, int target) {
+    public int[][] imageSmoother(int[][] img) {
 
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
+        m = img.length;
+        n = img[0].length;
+
+        int[][]res = new int[m][n];
+
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                res[i][j] = calculate(img, i, j);
             }
         }
-        return -1;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[][] matrix = new int[3][3]; // 3 行 3 列
+        matrix[0] = new int[]{100, 200, 100};
+        matrix[1] = new int[]{200, 50, 200};
+        matrix[2] = new int[]{100, 200, 100};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int[][]ret = sol.imageSmoother(matrix);
 
-        System.out.println(ret);
+        System.out.println(Arrays.deepToString(matrix));
     }
 }

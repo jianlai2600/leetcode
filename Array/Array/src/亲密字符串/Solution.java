@@ -1,58 +1,53 @@
-package 删除注释;
+package 亲密字符串;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    public List<String> removeComments(String[] source) {
+    public boolean buddyStrings(String s, String goal) {
 
-        List<String>res = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
+        int[]sArr = new int[26];
+        int[]goalArr = new int[26];
 
-        boolean inBlock = false;
-        for (String s : source) {
+        int cnt = 0;
+        int m = s.length(), n = goal.length();
 
-            int n = s.length();
+        if (m != n) {
+            return false;
+        }
 
-            for (int i = 0; i < n; i++) {
-                if (inBlock) {
-                    if (i + 1 < n && s.charAt(i) == '*' && s.charAt(i + 1) == '/') {
-                        inBlock = false;
-                        i++;
-                    }
-                } else {
-                    if (i + 1 < n && s.charAt(i) == '/' && s.charAt(i + 1) == '*') {
-                        inBlock = true;
-                        i++;
-                    } else if (i + 1 < n && s.charAt(i) == '/' && s.charAt(i + 1) == '/') {
-                        break;
-                    } else {
-                        sb.append(s.charAt(i));
-                    }
-                }
+        boolean haveSame = false;
+
+        for (int i = 0; i < m; i++) {
+
+            sArr[s.charAt(i) - 'a']++;
+            goalArr[goal.charAt(i) - 'a']++;
+
+            if (sArr[s.charAt(i) - 'a'] > 1) {
+                haveSame = true;
             }
-
-            if (!inBlock && sb.length() > 0) {
-                res.add(sb.toString());
-                sb.setLength(0);
+            if (s.charAt(i) != goal.charAt(i)) {
+                cnt++;
             }
         }
 
-        return res;
+        if (!Arrays.equals(sArr, goalArr)) {
+            return false;
+        }
+
+        if (s.equals(goal) && haveSame) {
+            return true;
+        }
+        return cnt == 2;
     }
     public static void main(String[] args) {
 
-        String[] source = {
-                "a/*comment", "line", "more_comment*/b"
-        };
+        String s = "ab", goal = "ab";
 
         Solution sol = new Solution();
-        List<String>res = sol.removeComments(source);
+        boolean res = sol.buddyStrings(s, goal);
 
-        for (String line : res) {
-            System.out.println(line);
-        }
-        System.out.println();
+        System.out.println(res);
     }
 }

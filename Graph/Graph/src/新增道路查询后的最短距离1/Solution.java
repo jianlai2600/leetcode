@@ -1,90 +1,74 @@
-package 最短的桥;
+package 新增道路查询后的最短距离1;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    Queue<int[]>queue;
-    int[][]directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    public void makeIsland(int[][]grid, int x, int y) {
+    public int bfs(Map<Integer, List<Integer>> graph) {
 
-        grid[x][y] = 2;
+        Queue<Integer>queue = new LinkedList<>();
+        queue.add(0);
+        int n = graph.size();
+        int[]dist = new int[n];
 
-        for (int i = 0; i < 4; i++) {
-            int nx = x + directions[i][0];
-            int ny = y + directions[i][1];
-
-            if (nx < 0 || nx >= grid.length || ny < 0 || ny >= grid[0].length) {
-                continue;
-            }
-            if (grid[nx][ny] == 1) {
-                grid[nx][ny] = 2;
-                makeIsland(grid, nx, ny);
-            } else if (grid[nx][ny] == 0) {
-                grid[nx][ny] = 2;
-                queue.offer(new int[]{nx, ny});
-            }
+        for (int i = 1; i < n; i++) {
+            dist[i] = -1;
         }
-    }
-    public int shortestBridge(int[][] grid) {
-
-        int ret = 1;
-
-        queue = new ArrayDeque<>();
-        int x = 0, y = 0;
-
-        for (int i = 0; i < grid.length; i++) {
-            for (int j = 0; j < grid[0].length; j++) {
-                if (grid[i][j] == 1) {
-                    x = i;
-                    y = j;
-                    break;
-                }
-            }
-        }
-
-        grid[x][y] = 2;
-        makeIsland(grid, x, y);
 
         while (!queue.isEmpty()) {
-            int size = queue.size();
-            for (int i = 0; i < size; i++) {
-                int[]curPoint = queue.poll();
-                x = curPoint[0];
-                y = curPoint[1];
-                for (int j = 0; j < 4; j++) {
-                    int nx = x + directions[j][0];
-                    int ny = y + directions[j][1];
 
-                    if (nx < 0 || nx >= grid.length || ny < 0 || ny >= grid[0].length) {
-                        continue;
-                    }
-                    if (grid[nx][ny] == 1) {
-                        return ret;
-                    } else if (grid[nx][ny] == 0) {
-                        grid[nx][ny] = 2;
-                        queue.offer(new int[]{nx, ny});
-                    }
+            int curNode = queue.poll();
+
+            for (Integer neighbor : graph.get(curNode)) {
+
+                if (dist[neighbor] != -1) {
+                    continue;
                 }
+                queue.add(neighbor);
+                dist[neighbor] = dist[curNode] + 1;
             }
-            ret++;
+        }
+        return dist[n - 1];
+    }
+    public int[] shortestDistanceAfterQueries(int n, int[][] queries) {
+
+        Map<Integer, List<Integer>> graph = new HashMap<>();
+        for (int i = 0; i < n - 1; i++) {
+            graph.put(i, new ArrayList<>());
+            graph.get(i).add(i + 1);
+        }
+        graph.put(n - 1, new ArrayList<>());
+
+        int len = queries.length;
+        int[]res = new int[len];
+
+        int index = 0;
+        for (int[]query : queries) {
+            int from = query[0];
+            int to = query[1];
+
+            graph.get(from).add(to);
+
+            res[index++] = bfs(graph);
         }
 
-        return ret;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[][] grid = {
-                {0, 1, 0},
-                {0, 0, 0},
-                {0, 0, 1}
+        int n = 5;
+        int[][] queries = {
+                {2, 4},
+                {0, 2},
+                {0, 4}
         };
 
         Solution sol = new Solution();
-        int ret = sol.shortestBridge(grid);
+        int[]res = sol.shortestDistanceAfterQueries(n, queries);
 
-        System.out.println(ret);
+        for (Integer num : res) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
     }
 }
 

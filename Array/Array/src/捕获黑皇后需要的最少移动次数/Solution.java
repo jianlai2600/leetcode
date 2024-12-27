@@ -1,56 +1,56 @@
-package 二分查找;
+package 捕获黑皇后需要的最少移动次数;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int car(int xc, int yc, int xe, int ye, int xt, int yt) {
 
-        List<Integer>ret = new ArrayList<>();
-
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+        if (xc == xt) {
+            if (xe == xc && ye > Math.min(yc, yt) && ye < Math.max(yc, yt)) {
+                return 2;
             } else {
-                right = mid - 1;
+                return 1;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
+        if (yc == yt) {
+            if (ye == yc && xe > Math.min(xc, xt) && xe < Math.max(xc, xt)) {
+                return 2;
+            } else {
+                return 1;
+            }
         }
-
-        return ret;
+        return 2;
     }
-    //
-    public int search(int[] nums, int target) {
+    public int elephant(int xc, int yc, int xe, int ye, int xt, int yt) {
 
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
+        float f1 = ((float) xe - xt) / ((float) ye - yt);
+        float f2 = ((float) xe - xc) / ((float) ye - yc);
+
+        if (Math.abs(f1) == 1) {
+            if (f2 == f1) {
+                if (xc > Math.min(xe, xt) && xc < Math.max(xe, xt) && yc > Math.min(ye, yt) && yc < Math.max(ye, yt)) {
+                    return 2;
+                } else {
+                    return 1;
+                }
             } else {
-                return mid;
+                return 1;
             }
         }
-        return -1;
+        return 2;
+    }
+    public int minMovesToCaptureTheQueen(int a, int b, int c, int d, int e, int f) {
+
+        return Math.min(car(a, b, c, d, e, f), elephant(a, b, c, d, e, f));
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int a = 5, b = 8, c = 8, d = 8, e = 1, f = 8;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.minMovesToCaptureTheQueen(a, b, c, d, e, f);
 
         System.out.println(ret);
     }

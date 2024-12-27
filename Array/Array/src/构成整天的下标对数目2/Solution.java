@@ -1,56 +1,32 @@
-package 二分查找;
+package 构成整天的下标对数目2;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public long countCompleteDayPairs(int[] hours) {
 
-        List<Integer>ret = new ArrayList<>();
+        long[]map = new long[24];
+        long res = 0;
 
-        Arrays.sort(nums);
+        for (Integer hour : hours) {
+            int tmp = hour % 24;
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
+            int need = (24 - tmp) % 24;
+
+            res += map[need];
+
+            map[tmp]++;
+
         }
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] hours = {12,12,30,24,24};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        long ret = sol.countCompleteDayPairs(hours);
 
         System.out.println(ret);
     }

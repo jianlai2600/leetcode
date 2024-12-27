@@ -1,66 +1,134 @@
-package 腐烂的橘子;
+package 最小高度树;
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    int[][]directions = {{0, 1}, {1, 0}, {-1, 0}, {0, -1}};
-    public int orangesRotting(int[][] grid) {
+    List<Integer>res;
+    int minDepth = Integer.MAX_VALUE;
+    int curDepth = 0;
+    public List<Integer> findMinHeightTrees(int n, int[][] edges) {
 
-        int m = grid.length, n = grid[0].length, ret = 0;
+        if (n == 1) {
+            return List.of(0);
+        }
+        Map<Integer, List<Integer>>graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            graph.put(i, new ArrayList<>());
+        }
 
-        Queue<int[]>queue = new LinkedList<>();
-        int freshOrange = 0;
+        for (int[]edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
+            graph.get(from).add(to);
+            graph.get(to).add(from);
+        }
+        int[]degree = new int[n];
 
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (grid[i][j] == 1) {
-                    freshOrange++;
-                } else if (grid[i][j] == 2) {
-                    queue.add(new int[]{i, j});
-                }
+        List<Integer>leave = new ArrayList<>();
+        for (int i = 0; i < n; i++) {
+            degree[i] = graph.get(i).size();
+            if (degree[i] == 1) {
+                leave.add(i);
             }
         }
-        if (queue.isEmpty() && freshOrange == 0) {
-            return 0;
+
+        int curNode = n;
+
+        while (curNode > 2) {
+            curNode -= leave.size();
+            List<Integer>newLeave = new ArrayList<>();
+
+            for (Integer l : leave) {
+                for (Integer neighbor : graph.get(l)) {
+                    degree[neighbor]--;
+                    if (degree[neighbor] == 1) {
+                        newLeave.add(neighbor);
+                    }
+                }
+            }
+            leave = newLeave;
         }
+
+        return leave;
+    }
+    public List<Integer> findMinHeightTrees2(int n, int[][] edges) {
+
+        res = new ArrayList<>();
+
+        Map<Integer, List<Integer>>graph = new HashMap<>();
+        for (int i = 0; i < n; i++) {
+            graph.put(i, new ArrayList<>());
+        }
+
+        for (int[]edge : edges) {
+            int from = edge[0];
+            int to = edge[1];
+            graph.get(from).add(to);
+            graph.get(to).add(from);
+        }
+
+        for (int i = 0; i < n; i++) {
+            curDepth = 0;
+            bfs(graph, i);
+        }
+
+        return res;
+    }
+
+    private void bfs(Map<Integer, List<Integer>> graph, int index) {
+
+        Queue<Integer>queue = new LinkedList<>();
+        queue.add(index);
+        boolean[]visited = new boolean[graph.size()];
+
         while (!queue.isEmpty()) {
+
             int size = queue.size();
 
-            for (int ind = 0; ind < size; ind++) {
-                int[]tmp = queue.poll();
-                int x = tmp[0], y = tmp[1];
+            for (int i = 0; i < size; i++) {
+                int tmp = queue.poll();
+                visited[tmp] = true;
 
-                for (int i = 0; i < 4; i++) {
-                    int nx = x + directions[i][0];
-                    int ny = y + directions[i][1];
-
-                    if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
-                        continue;
-                    }
-                    if (grid[nx][ny] == 1) {
-                        grid[nx][ny] = 2;
-                        freshOrange--;
-                        queue.add(new int[]{nx, ny});
+                List<Integer>neighbors = graph.get(tmp);
+                if (!neighbors.isEmpty()) {
+                    for (Integer neighbor : neighbors) {
+                        if (!visited[neighbor]) {
+                            queue.add(neighbor);
+                        }
                     }
                 }
             }
-            ret++;
+
+            curDepth++;
         }
-        if (freshOrange != 0) {
-            return -1;
+
+        if (curDepth < minDepth) {
+            minDepth =curDepth;
+            res.clear();
+            res.add(index);
+        } else if (curDepth == minDepth) {
+            res.add(index);
         }
-        return ret - 1;
     }
 
     public static void main(String[] args){
 
-        int grid[][] = {{2, 1, 1},{0, 1, 1},{1, 0, 1}};
+        int n = 6;
+        int[][] edges = {
+                {3, 0},
+                {3, 1},
+                {3, 2},
+                {3, 4},
+                {5, 4}
+        };
 
         Solution sol = new Solution();
-        int ret = sol.orangesRotting(grid);
+        List<Integer> ret = sol.findMinHeightTrees(n, edges);
 
-        System.out.println(ret);
+        for (Integer num : ret) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
     }
 }
 

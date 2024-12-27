@@ -1,56 +1,32 @@
-package 二分查找;
+package 字母移位;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public String shiftingLetters(String s, int[] shifts) {
 
-        List<Integer>ret = new ArrayList<>();
+        char[]arr = s.toCharArray();
+        int n = shifts.length;
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
+        for (int i = n - 2; i >= 0; i--) {
+            shifts[i] = (shifts[i] + shifts[i + 1]) % 26;
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
+        for (int i = 0; i < n; i++) {
+            char c = arr[i];
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
+            arr[i] = (char)('a' + (c - 'a' + shifts[i]) % 26);
         }
-        return -1;
+        return new String(arr);
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        String s = "ruu";
+        int[]shifts = {26, 9, 17};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        String ret = sol.shiftingLetters(s, shifts);
 
         System.out.println(ret);
     }

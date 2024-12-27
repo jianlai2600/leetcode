@@ -1,57 +1,27 @@
-package 二分查找;
+package 最小差值1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
-
-        List<Integer>ret = new ArrayList<>();
-
+    public int smallestRangeI(int[] nums, int k) {
         Arrays.sort(nums);
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
-            }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
+        int n = nums.length;
+        int max = nums[n - 1];
+        int min = nums[0];
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return Math.max(0, max - min - 2 * k);
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] nums = {0, 10};
+        int k = 2;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int res = sol.smallestRangeI(nums, k);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

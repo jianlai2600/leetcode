@@ -1,56 +1,29 @@
-package 二分查找;
+package 判断是否可以赢得数字游戏;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public boolean canAliceWin(int[] nums) {
 
-        List<Integer>ret = new ArrayList<>();
+        int sum1 = 0, sum2 = 0;
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+        for (Integer num : nums) {
+            if (num >= 1 && num <= 9) {
+                sum1 += num;
             } else {
-                right = mid - 1;
+                sum2 += num;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return sum1 > sum2 || sum2 > sum1;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] nums = {1,2,3,4,5,14};
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        boolean ret = sol.canAliceWin(nums);
 
         System.out.println(ret);
     }

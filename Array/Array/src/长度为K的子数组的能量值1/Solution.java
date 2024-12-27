@@ -1,57 +1,42 @@
-package 二分查找;
+package 长度为K的子数组的能量值1;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int[] resultsArray(int[] nums, int k) {
 
-        List<Integer>ret = new ArrayList<>();
+        int n = nums.length;
+        int[]res = new int[n - k + 1];
 
-        Arrays.sort(nums);
+        int left = 0, right = 0;
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+        while (left <= n - k) {
+
+            if (right - left == k - 1) {
+                res[left] = nums[right];
+                left++;
             } else {
-                right = mid - 1;
+                right++;
+                while (left <= n - k && left < right && nums[right] != nums[right - 1] + 1) {
+                    res[left++] = -1;
+                }
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return res;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int[] nums = {1, 3, 4};
+        int k = 2;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int[]res = sol.resultsArray(nums, k);
 
-        System.out.println(ret);
+        for (Integer num : res) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
     }
 }

@@ -1,57 +1,30 @@
-package 二分查找;
+package 求出硬币游戏的赢家;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public String losingPlayer(int x, int y) {
 
-        List<Integer>ret = new ArrayList<>();
+        int alice = 1;
 
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+        while (x > 0 && y > 0) {
+            if (x >= 1 && y >= 4) {
+                x -= 1;
+                y -= 4;
+                alice *= -1;
             } else {
-                right = mid - 1;
+                break;
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return alice == 1 ? "Bob" : "Alice";
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
-
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        String res = sol.losingPlayer(2, 10);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

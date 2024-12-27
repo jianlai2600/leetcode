@@ -1,79 +1,65 @@
-package 墙与门;
+package 判断二分图;
 
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 class Solution {
-    static final int INF = Integer.MAX_VALUE;
-    int m, n;
-    int[][]directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    boolean[][]visited;
-    // BFS
-    public void bfs(boolean[][]visited, int[][]rooms, int x, int y) {
+    public boolean bfs(int point, int[][]graph) {
 
-        Queue<int[]>queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
+        Queue<Integer>queue = new LinkedList<>();
 
-        int dist = 1;
+        queue.add(point);
+        color[point] = 1;
+
         while (!queue.isEmpty()) {
 
-            int size = queue.size();
+            int curNode = queue.poll();
+            int curColor = color[curNode];
 
-            for (int j = 0; j < size; j++) {
-                int[]tmp = queue.poll();
-                x = tmp[0];
-                y = tmp[1];
+            int[]neighbors = graph[curNode];
+            for (Integer neighbor : neighbors) {
 
-                for (int i = 0; i < 4; i++) {
-                    int nx = x + directions[i][0];
-                    int ny = y + directions[i][1];
-
-                    if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
-                        continue;
-                    }
-                    if (rooms[nx][ny] != -1 && rooms[nx][ny] != 0 && !visited[nx][ny]) {
-
-                        rooms[nx][ny] = Math.min(dist, rooms[nx][ny]);
-                        queue.add(new int[]{nx, ny});
-                        visited[nx][ny] = true;
-                    }
-                }
-            }
-            dist++;
-        }
-    }
-    public void wallsAndGates(int[][] rooms) {
-
-        m = rooms.length;
-        n = rooms[0].length;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (rooms[i][j] == 0) {
-                    visited = new boolean[m][n];
-                    bfs(visited, rooms, i, j);
+                if (color[neighbor] == 0) {
+                    color[neighbor] = -curColor;
+                    queue.add(neighbor);
+                } else if (color[neighbor] == curColor) {
+                    return false;
                 }
             }
         }
-    }
 
+        return true;
+    }
+    int[]color;
+
+    public boolean isBipartite(int[][] graph) {
+
+        int n = graph.length;
+        color = new int[n];
+        for (int i = 0; i < n; i++) {
+            if (color[i] == 0) {
+                boolean res = bfs(i, graph);
+                if (!res) {
+                    return res;
+                }
+            }
+        }
+        return true;
+    }
     public static void main(String[] args) {
 
-        int rooms[][] = {{INF, -1, 0, INF},
-                {INF, INF, INF, -1},
-                {INF, -1, INF, -1},
-                {0, -1, INF, INF}};
+        int[][] graph = {
+                {1, 2, 3}, // 节点 0 的邻居
+                {0, 2},    // 节点 1 的邻居
+                {0, 1, 3}, // 节点 2 的邻居
+                {0, 2}     // 节点 3 的邻居
+        };
 
         Solution sol = new Solution();
-        sol.wallsAndGates(rooms);
+        boolean res = sol.isBipartite(graph);
 
-        for (int[]row : rooms) {
-            for (int room : row) {
-                System.out.print(room + " ");
-            }
-            System.out.println();
-        }
+        System.out.println(res);
     }
 }
 

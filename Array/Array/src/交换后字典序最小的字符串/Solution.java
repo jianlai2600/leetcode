@@ -1,57 +1,33 @@
-package 二分查找;
+package 交换后字典序最小的字符串;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public String getSmallestString(String s) {
 
-        List<Integer>ret = new ArrayList<>();
+        StringBuilder sb = new StringBuilder(s);
 
-        Arrays.sort(nums);
+        for (int i = 0; i < sb.length() - 1; i++) {
+            int num1 = sb.charAt(i) - '0';
+            int num2 = sb.charAt(i + 1) - '0';
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+            if (num1 % 2 == num2 % 2 && num1 > num2) {
+                sb.setCharAt(i, (char) (num2 + '0'));
+                sb.setCharAt(i + 1, (char) (num1 + '0'));
+                return sb.toString();
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return s;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        String s = "45320";
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        String res = sol.getSmallestString(s);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

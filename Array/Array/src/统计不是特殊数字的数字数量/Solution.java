@@ -1,57 +1,39 @@
-package 二分查找;
+package 统计不是特殊数字的数字数量;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
 
-        List<Integer>ret = new ArrayList<>();
+    public int nonSpecialCount(int l, int r) {
 
-        Arrays.sort(nums);
+        int cnt = r - l + 1;
 
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                right = mid - 1;
+        int n = (int)Math.sqrt(r);
+        int[]arr = new int[n + 1];
+
+
+        for (int i = 2; i <= n; i++) {
+            if (arr[i] == 0) {
+
+                if (i * i >= l && i * i <= r) {
+                    cnt--;
+                }
+                for (int j = i * 2; j <= n; j += i) {
+                    arr[j] = -1;
+                }
             }
         }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
-
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
-            }
-        }
-        return -1;
+        return cnt;
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int l = 5, r = 7;
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int res = sol.nonSpecialCount(l, r);
 
-        System.out.println(ret);
+        System.out.println(res);
     }
 }

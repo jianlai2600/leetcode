@@ -1,56 +1,51 @@
-package 二分查找;
+package 找到最近的有相同X或Y坐标的点;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.PriorityQueue;
 
 class Solution {
-    // 找到一个大小于等于target 的坐标，为left
-    public List<Integer> targetIndices(int[] nums, int target) {
+    public int nearestValidPoint(int x, int y, int[][] points) {
 
-        List<Integer>ret = new ArrayList<>();
-
-        Arrays.sort(nums);
-
-        int left = 0, right = nums.length - 1;
-        while (left <= right) {
-            int mid = left + (right - left) / 2;
-            if (nums[mid] < target) {
-                left = mid + 1;
+        PriorityQueue<int[]>pq = new PriorityQueue<>((a, b)->{
+            if (a[0] == b[0]) {
+                return a[1] - b[1];
             } else {
-                right = mid - 1;
+                return a[0] - b[0];
             }
-        }
-        // 这里使用left
-        while (left < nums.length && nums[left] == target) {
-            ret.add(left++);
-        }
+        });
 
-        return ret;
-    }
-    //
-    public int search(int[] nums, int target) {
-
-        int left = 0, right = nums.length - 1, mid;
-        while (left <= right) {
-            mid = (left + right) / 2;
-            if (nums[mid] > target) {
-                right = mid - 1;
-            } else if (nums[mid] < target) {
-                left = mid + 1;
-            } else {
-                return mid;
+        int idx = 0;
+        for (int[]point : points) {
+            if (point[0] == x || point[1] == y) {
+                int dis = Math.abs(x - point[0]) + Math.abs(y - point[1]);
+                int[]tmp = new int[2];
+                tmp[0] = dis;
+                tmp[1] = idx;
+                pq.add(tmp);
             }
+            idx++;
         }
-        return -1;
+        if (pq.isEmpty()) {
+            return -1;
+        }
+        return pq.poll()[1];
     }
     public static void main(String[] args) {
 
-        int[] nums = {-1,0,3,5,9,12};
-        int target = 9;
+        int x = 3;
+        int y = 4;
+        int[][] points = {
+                {1, 2},
+                {3, 1},
+                {2, 4},
+                {2, 3},
+                {4, 4}
+        };
 
         Solution sol = new Solution();
-        int ret = sol.search(nums, target);
+        int ret = sol.nearestValidPoint(x, y, points);
 
         System.out.println(ret);
     }

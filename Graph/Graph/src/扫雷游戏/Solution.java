@@ -1,79 +1,97 @@
-package 墙与门;
+package 扫雷游戏;
 
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 class Solution {
-    static final int INF = Integer.MAX_VALUE;
     int m, n;
-    int[][]directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+    int[]square = {-1, 0, 1};
     boolean[][]visited;
+    public int getNum(char[][]board, int x, int y) {
+
+        int res = 0;
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                int nx = x + square[i];
+                int ny = y + square[j];
+                if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
+                    continue;
+                }
+                if (board[nx][ny] == 'M') {
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
     // BFS
-    public void bfs(boolean[][]visited, int[][]rooms, int x, int y) {
+    public void bfs(char[][]board, int x, int y) {
 
-        Queue<int[]>queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
+        if (visited[x][y]) {
+            return;
+        }
+        visited[x][y] = true;
 
-        int dist = 1;
-        while (!queue.isEmpty()) {
+        int roundNum = getNum(board, x, y);
+        if (roundNum == 0) {
+            board[x][y] = 'B';
 
-            int size = queue.size();
-
-            for (int j = 0; j < size; j++) {
-                int[]tmp = queue.poll();
-                x = tmp[0];
-                y = tmp[1];
-
-                for (int i = 0; i < 4; i++) {
-                    int nx = x + directions[i][0];
-                    int ny = y + directions[i][1];
-
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    int nx = x + square[i];
+                    int ny = y + square[j];
                     if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
                         continue;
                     }
-                    if (rooms[nx][ny] != -1 && rooms[nx][ny] != 0 && !visited[nx][ny]) {
-
-                        rooms[nx][ny] = Math.min(dist, rooms[nx][ny]);
-                        queue.add(new int[]{nx, ny});
-                        visited[nx][ny] = true;
-                    }
+                    bfs(board, nx, ny);
                 }
             }
-            dist++;
+
+        } else {
+            board[x][y] = Character.forDigit(roundNum, 10);
         }
     }
-    public void wallsAndGates(int[][] rooms) {
+    public char[][] updateBoard(char[][] board, int[] click) {
 
-        m = rooms.length;
-        n = rooms[0].length;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (rooms[i][j] == 0) {
-                    visited = new boolean[m][n];
-                    bfs(visited, rooms, i, j);
-                }
-            }
+        int x = click[0];
+        int y = click[1];
+        if (board[x][y] == 'M') {
+            board[x][y] = 'X';
+            return board;
         }
+
+        m = board.length;
+        n = board[0].length;
+
+        visited = new boolean[m][n];
+        bfs(board, x, y);
+
+        return board;
     }
 
     public static void main(String[] args) {
 
-        int rooms[][] = {{INF, -1, 0, INF},
-                {INF, INF, INF, -1},
-                {INF, -1, INF, -1},
-                {0, -1, INF, INF}};
+        char[][] board = {
+                {'E', 'E', 'E', 'E', 'E'},
+                {'E', 'E', 'M', 'E', 'E'},
+                {'E', 'E', 'E', 'E', 'E'},
+                {'E', 'E', 'E', 'E', 'E'}
+        };
+
+        // 点击位置的坐标
+        int[] click = {3, 0};
 
         Solution sol = new Solution();
-        sol.wallsAndGates(rooms);
+        char[][]res = sol.updateBoard(board, click);
 
-        for (int[]row : rooms) {
-            for (int room : row) {
+        for (char[]row : res) {
+            for (char room : row) {
                 System.out.print(room + " ");
             }
             System.out.println();
         }
+        System.out.println();
     }
 }
 

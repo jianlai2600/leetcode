@@ -1,79 +1,61 @@
-package 墙与门;
+package 网络延迟时间;
 
 
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 class Solution {
-    static final int INF = Integer.MAX_VALUE;
-    int m, n;
-    int[][]directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-    boolean[][]visited;
-    // BFS
-    public void bfs(boolean[][]visited, int[][]rooms, int x, int y) {
+    int MAX = Integer.MAX_VALUE / 2;
+    public int networkDelayTime(int[][] times, int n, int k) {
 
-        Queue<int[]>queue = new LinkedList<>();
-        queue.add(new int[]{x, y});
+        int[][]graph = new int[n][n];
 
-        int dist = 1;
-        while (!queue.isEmpty()) {
+        for (int i = 0; i < n; i++) {
+            Arrays.fill(graph[i], MAX);
+        }
+        for (int[]time : times) {
+            int x = time[0];
+            int y = time[1];
+            int duration = time[2];
+            graph[x - 1][y - 1] = duration;
+        }
 
-            int size = queue.size();
+        int[]dis = new int[n];
+        Arrays.fill(dis, MAX);
 
-            for (int j = 0; j < size; j++) {
-                int[]tmp = queue.poll();
-                x = tmp[0];
-                y = tmp[1];
+        dis[k - 1] = 0;
+        boolean[]used = new boolean[n];
 
-                for (int i = 0; i < 4; i++) {
-                    int nx = x + directions[i][0];
-                    int ny = y + directions[i][1];
+        for (int i = 0; i < n; i++) {
+            int x = -1;
 
-                    if (nx < 0 || nx >= m || ny < 0 || ny >= n) {
-                        continue;
-                    }
-                    if (rooms[nx][ny] != -1 && rooms[nx][ny] != 0 && !visited[nx][ny]) {
-
-                        rooms[nx][ny] = Math.min(dist, rooms[nx][ny]);
-                        queue.add(new int[]{nx, ny});
-                        visited[nx][ny] = true;
-                    }
+            for (int y = 0; y < n; y++) {
+                if (!used[y] && (x == -1 || dis[y] < dis[x])) {
+                    x = y;
                 }
             }
-            dist++;
-        }
-    }
-    public void wallsAndGates(int[][] rooms) {
+            used[x] = true;
 
-        m = rooms.length;
-        n = rooms[0].length;
-
-        for (int i = 0; i < m; i++) {
-            for (int j = 0; j < n; j++) {
-                if (rooms[i][j] == 0) {
-                    visited = new boolean[m][n];
-                    bfs(visited, rooms, i, j);
-                }
+            for (int y = 0; y < n; y++) {
+                dis[y] = Math.min(dis[y], dis[x] + graph[x][y]);
             }
         }
+        int ans = Arrays.stream(dis).max().getAsInt();
+        return ans == MAX ? -1 : ans;
     }
 
     public static void main(String[] args) {
 
-        int rooms[][] = {{INF, -1, 0, INF},
-                {INF, INF, INF, -1},
-                {INF, -1, INF, -1},
-                {0, -1, INF, INF}};
+        int[][] times = {
+                {1, 2, 1},
+                {2, 1, 3}
+        };
+        int n = 2;
+        int k = 2;
 
         Solution sol = new Solution();
-        sol.wallsAndGates(rooms);
+        int res = sol.networkDelayTime(times, n, k);
 
-        for (int[]row : rooms) {
-            for (int room : row) {
-                System.out.print(room + " ");
-            }
-            System.out.println();
-        }
+        System.out.println(res);
     }
 }
 
