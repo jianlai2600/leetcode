@@ -12,9 +12,11 @@ class Solution {
         dp[0] = 0;
         int m = nums.size();
 
+        int start = 0;
         for (int i = 0; i < m; i++) {
             int num = nums.get(i);
-            for (int j = target; j >= num; j--) {
+            start = Math.min(start + num, target);
+            for (int j = start; j >= num; j--) {
                 if (dp[j - num] != Integer.MIN_VALUE) {
                     dp[j] = Math.max(dp[j], dp[j - num] + 1);
                 }
